@@ -47,7 +47,7 @@ set_flextable_defaults(
 
 ```{r data, include = FALSE}
 # load data
-team0 <- read_csv(here("Project/full_team.csv")) %>%
+team0 <- read_csv(here("full_team.csv")) %>%
   select(-`...1`)
 
 team <- team0 %>% filter(ineligible !=1) %>%
