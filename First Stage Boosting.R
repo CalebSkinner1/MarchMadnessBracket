@@ -8,6 +8,7 @@ library("xgboost")
 library("rpart.plot")
 library("vip")
 library("flextable")
+library("here")
 
 set_flextable_defaults(
   font.size = 10, theme_fun = theme_apa,
@@ -15,7 +16,7 @@ set_flextable_defaults(
   background.color = "#EFEFEF",
   text.align = "center")
 
-team0 <- read_csv("Project/full_team.csv") %>%
+team0 <- read_csv(here("Data/full_team.csv")) %>%
   select(-`...1`)
 
 team <- team0 %>% filter(ineligible !=1) %>%
