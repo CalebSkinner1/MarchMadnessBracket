@@ -54,7 +54,7 @@ for(i in 1:7){
     grid = boost_tuning_grid,
     metrics = metric_set(accuracy))
   
-  s1_boost_best_params <- select_best(s1_boost_tune_results, "accuracy")
+  s1_boost_best_params <- select_best(s1_boost_tune_results, metric = "accuracy")
   
   s1_boost_final_fit <- finalize_workflow(
     workflow() %>%

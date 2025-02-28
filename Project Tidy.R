@@ -23,11 +23,11 @@ library("readxl")
 
 # Tidying -----------------------------------------------------------------
 
-teams <- read_csv("Project/Kaggle Data/MTeams.csv") %>% clean_names() %>%
+teams <- read_csv("Project/Kaggle Data2/MTeams.csv", show_col_types = FALSE) %>% clean_names() %>%
   select(team_id, team_name)
-conferences <- read_csv("Project/Kaggle Data/MTeamConferences.csv") %>% clean_names()
+conferences <- read_csv("Project/Kaggle Data2/MTeamConferences.csv", show_col_types = FALSE) %>% clean_names()
 
-historical_season <- read_csv("Project/Kaggle Data/MRegularSeasonCompactResults.csv") %>% clean_names() %>%
+historical_season <- read_csv("Project/Kaggle Data2/MRegularSeasonCompactResults.csv", show_col_types = FALSE) %>% clean_names() %>%
   left_join(conferences, by = join_by(season, "w_team_id" == "team_id")) %>%
   rename(w_conf = "conf_abbrev") %>%
   left_join(conferences, by = join_by(season, "l_team_id" == "team_id")) %>%
@@ -55,7 +55,7 @@ non_conf_record <- historical_season %>% filter(w_conf != l_conf) %>% group_by(w
     nc_win_perc = nc_wins/(nc_wins + nc_losses)) %>%
   arrange(team_id, season)
 
-rankings <- read_csv("Project/Kaggle Data/MMasseyOrdinals_thruSeason2024_day128.csv") %>%
+rankings <- read_csv("Project/Kaggle Data2/MMasseyOrdinals.csv", show_col_types = FALSE) %>%
   clean_names()
 
 ranking_filter <- function(sys){
@@ -94,14 +94,14 @@ ap <- ranking_filter("AP") %>%
 sag <- ranking_filter("SAG") %>%
   rename(sag = ordinal_rank)
 
-alternate_spellings <- read_csv("Project/Kaggle Data/MTeamSpellings.csv") %>%
+alternate_spellings <- read_csv("Project/Kaggle Data2/MTeamSpellings.csv", show_col_types = FALSE) %>%
   clean_names() %>%
   mutate(team_name = str_to_title(team_name_spelling)) %>%
   select(team_name, team_id) %>%
   bind_rows(teams) %>%
   distinct(team_name, .keep_all = TRUE)
 
-sor2 <- read_excel("Project/SOR data.xlsx") %>%
+sor2 <- read_excel("Project/MarchMadness_Bracket/Data/SOR data.xlsx") %>%
   clean_names() %>%
   mutate(
     team = str_remove_all(team, "[0123456789\\*]"),
@@ -143,7 +143,7 @@ sor <- sor %>% filter(season != 2021, season != 2023) %>%
   bind_rows(sor2) %>%
   arrange(season, sor)
 
-kpi2 <- read_excel("Project/KPI data.xlsx") %>%
+kpi2 <- read_excel("Project/MarchMadness_Bracket/Data/KPI data.xlsx") %>%
   clean_names() %>%
   mutate(
     team = str_remove_all(team, "\\("),
@@ -174,7 +174,7 @@ kpi2 <- read_excel("Project/KPI data.xlsx") %>%
 kpi <- kpi %>% filter(season < 2020) %>%
   bind_rows(kpi2)
 
-sos <- read_excel("Project/SOS data.xlsx") %>%
+sos <- read_excel("Project/MarchMadness_Bracket/Data/SOS data.xlsx") %>%
   clean_names() %>%
   mutate(
     team = str_remove_all(team, "[0123456789\\*]"),
@@ -257,8 +257,9 @@ net_quads_big <- historical_season %>%
 
 net_quads <- net_quads_big %>%
   group_by(season, w_team_id, w_quad) %>%
-  summarise(wins = n()) %>%
-  full_join(net_quads_big %>% group_by(season, l_team_id, l_quad) %>% summarise(losses = n()),
+  summarize(wins = n(),
+            .groups = "keep") %>%
+  full_join(net_quads_big %>% group_by(season, l_team_id, l_quad) %>% summarise(losses = n(), .groups = "keep"),
             by = join_by(season, w_team_id == l_team_id, w_quad == l_quad)) %>%
   rename(team_id = w_team_id,
          quad = w_quad) %>%
@@ -270,7 +271,8 @@ net_quads <- net_quads_big %>%
   pivot_wider(names_from = quad, values_from = c(wins, losses), names_prefix = "q", names_sort = TRUE) %>%
   group_by(season, team_id) %>%
   summarise(
-    across(wins_q1:losses_q4, ~sum(.x, na.rm = TRUE))) %>%
+    across(wins_q1:losses_q4, ~sum(.x, na.rm = TRUE)),
+    .groups = "keep") %>%
   ungroup() %>%
   rename_with(~str_replace(.x, "wins_", "net_w")) %>% 
   rename_with(~str_replace(.x, "losses_", "net_l"))
@@ -311,8 +313,8 @@ rpi_quads_big <- historical_season %>%
 
 rpi_quads <- rpi_quads_big %>%
   group_by(season, w_team_id, w_quad) %>%
-  summarise(wins = n()) %>%
-  full_join(rpi_quads_big %>% group_by(season, l_team_id, l_quad) %>% summarise(losses = n()),
+  summarise(wins = n(), .groups = "keep") %>%
+  full_join(rpi_quads_big %>% group_by(season, l_team_id, l_quad) %>% summarise(losses = n(), .groups = "keep"),
             by = join_by(season, w_team_id == l_team_id, w_quad == l_quad)) %>%
   rename(team_id = w_team_id,
          quad = w_quad) %>%
@@ -324,18 +326,20 @@ rpi_quads <- rpi_quads_big %>%
   pivot_wider(names_from = quad, values_from = c(wins, losses), names_prefix = "q", names_sort = TRUE) %>%
   group_by(season, team_id) %>%
   summarise(
-    across(wins_q1:losses_q4, ~sum(.x, na.rm = TRUE))) %>%
+    across(wins_q1:losses_q4, ~sum(.x, na.rm = TRUE)),
+    .groups = "keep") %>%
   ungroup() %>%
   rename_with(~str_replace(.x, "wins_", "rpi_w")) %>% 
   rename_with(~str_replace(.x, "losses_", "rpi_l"))
 
-conf_tournament <- read_csv("Project/Kaggle Data/MConferenceTourneyGames.csv") %>%
+conf_tournament <- read_csv("Project/Kaggle Data2/MConferenceTourneyGames.csv", show_col_types = FALSE) %>%
   clean_names() %>% mutate(index = row_number()) %>% rename(conf = conf_abbrev)
 
 conf_champions <- conf_tournament %>%
   group_by(season, conf) %>%
   summarise(
-    last_game_row = max(index)) %>%
+    last_game_row = max(index),
+    .groups = "keep") %>%
   ungroup() %>%
   left_join(conf_tournament, by = join_by("season", "conf", last_game_row == index)) %>%
   select(-last_game_row, -day_num) %>%
@@ -344,11 +348,11 @@ conf_champions <- conf_tournament %>%
   pivot_longer(cols = c("champion", "finalist"), names_to = "conf_result", values_to = "team_id") %>%
   select(-conf)
 
-seeds <- read_csv("Project/Kaggle Data/MNCAATourneySeeds.csv") %>% clean_names() %>%
+seeds <- read_csv("Project/Kaggle Data2/MNCAATourneySeeds.csv", show_col_types = FALSE) %>% clean_names() %>%
   mutate(seed = str_remove_all(seed, "[WXYZab]"),
          seed = as.integer(seed))
 
-historical_tourney <- read_csv("Project/Kaggle Data/MNCAATourneyCompactResults.csv") %>%
+historical_tourney <- read_csv("Project/Kaggle Data2/MNCAATourneyCompactResults.csv", show_col_types = FALSE) %>%
   clean_names() %>%
   add_row(season = 2021, day_num = 137, w_team_id = 1332, w_score = 1, l_team_id = 1433, l_score = 0, w_loc = "N", num_ot = 0)
 
