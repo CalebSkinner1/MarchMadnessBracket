@@ -33,8 +33,8 @@ historical_season <- read_csv("Project/Kaggle Data2/MRegularSeasonCompactResults
   left_join(conferences, by = join_by(season, "l_team_id" == "team_id")) %>%
   rename(l_conf = "conf_abbrev")
 
-record <- historical_season %>% group_by(w_team_id, season) %>% summarise(wins = n()) %>%
-  left_join(historical_season %>% group_by(l_team_id, season) %>% summarise(losses = n()),
+record <- historical_season %>% group_by(w_team_id, season) %>% summarise(wins = n(), .groups = "keep") %>%
+  left_join(historical_season %>% group_by(l_team_id, season) %>% summarise(losses = n(), .groups = "keep"),
             by = join_by("w_team_id" == "l_team_id", season)) %>%
   ungroup() %>%
   rename("team_id" = "w_team_id") %>%
@@ -44,9 +44,9 @@ record <- historical_season %>% group_by(w_team_id, season) %>% summarise(wins =
     win_perc = wins/(wins + losses)) %>%
   arrange(team_id, season)
 
-non_conf_record <- historical_season %>% filter(w_conf != l_conf) %>% group_by(w_team_id, season) %>% summarise(nc_wins = n()) %>%
+non_conf_record <- historical_season %>% filter(w_conf != l_conf) %>% group_by(w_team_id, season) %>% summarise(nc_wins = n(), .groups = "keep") %>%
   ungroup() %>%
-  full_join(historical_season %>% filter(w_conf != l_conf) %>% group_by(l_team_id, season) %>% summarise(nc_losses = n()) %>% ungroup(),
+  full_join(historical_season %>% filter(w_conf != l_conf) %>% group_by(l_team_id, season) %>% summarise(nc_losses = n(), .groups = "keep") %>% ungroup(),
                              by = join_by("w_team_id" == "l_team_id", season)) %>%
   rename("team_id" = "w_team_id") %>%
   mutate(
@@ -174,6 +174,14 @@ kpi2 <- read_excel("Project/MarchMadness_Bracket/Data/KPI data.xlsx") %>%
 kpi <- kpi %>% filter(season < 2020) %>%
   bind_rows(kpi2)
 
+# library("rvest")
+# library("httr")
+# 
+# read_html("https://faktorsports.com") %>%
+#   html_element("body") %>%
+#   html_element("#root") %>%
+#   html_children()
+  
 sos <- read_excel("Project/MarchMadness_Bracket/Data/SOS data.xlsx") %>%
   clean_names() %>%
   mutate(
