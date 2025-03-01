@@ -21,6 +21,99 @@ library("readxl")
 # SOR X, Conf Tournament X, Record X, Nonconf record X, BPI (2009) X, KPI (2016) X, KenPom (2003) X
 # committees picks X, tournament results X
 
+
+# Functions ---------------------------------------------------------------
+
+clean_team_names <- function(df){
+  df %>%
+    clean_names() %>%
+    mutate(
+      team = str_remove_all(team, "[0123456789\\*]"),
+      team = str_trim(team),
+      team = str_remove_all(team, "\\("),
+      team = str_remove_all(team, "\\)"),
+      team = str_replace_all(team, "St. ", "St "),
+      team = str_replace_all(team, "C-", "C "),
+      team = str_replace_all(team, "LaSalle", "La Salle"),
+      team = str_replace_all(team, "Cal State-", "CS "),
+      team = str_replace_all(team, "UMKC", "Missouri KC"),
+      team = str_replace_all(team, "Purdue-Fort Wayne", "PFW"),
+      team = str_replace_all(team, "UMass Lowell", "MA Lowell"),
+      team = str_replace_all(team, "McNeese State", "McNeese St"),
+      team = str_replace_all(team, "TAMU-Corpus Christi", "TAM C. Christi"),
+      team = str_replace_all(team, "USC Upstate", "SC Upstate"),
+      team = str_replace_all(team, "Mount St Mary's", "Mt St Mary's"),
+      team = str_replace_all(team, "SIU-Edwardsville", "SIUE"),
+      team = str_replace_all(team, "Houston Christian", "Houston Chr"),
+      team = str_replace_all(team, "SE Missouri State", "SE Missouri St"),
+      team = str_replace_all(team, "MD-Eastern Shore", "MD E Shore"),
+      team = str_replace_all(team, "Southern Ind.", "Southern Indiana"),
+      team = str_replace_all(team, "Tex. A&M-Commerce", "TX A&M Commerce"),
+      team = str_replace_all(team, "Lindenwood MO", "Lindenwood"),
+      team = str_replace_all(team, "Cal St. Bakersfield", "CS Bakersfield"),
+      team = str_replace_all(team, "UTSA", "UT San Antonio"),
+      team = str_replace_all(team, "Louisiana Lafayette", "Lafayette"),
+      team = str_replace_all(team, "UMass Lowell", "MA Lowell"),
+      team = str_replace_all(team, "College of Charleston", "Col Charleston"),
+      team = str_replace_all(team, "St. Francis NY", "St Francis NY"),
+      team = str_replace_all(team, "St. Francis PA", "St Francis PA"),
+      team = str_replace_all(team, "UMKC", "Missouri KC"),
+      team = str_replace_all(team, "Tarleton St.", "Tarleton St"),
+      team = str_replace_all(team, "Southeast Missouri St.", "SE Missouri St"),
+      team = str_replace_all(team, "FIU", "Florida Intl"),
+      team = str_replace_all(team, "Illinois Chicago", "IL Chicago"),
+      team = str_replace_all(team, "Dixie St.", "Utah Tech"),
+      team = str_replace_all(team, "SIU-Edwardsville", "SIUE"),
+      team = str_replace_all(team, "McNeese St.", "McNeese St"),
+      team = str_replace_all(team, "Mississippi Valley St.", "MS Valley St"),
+      team = str_replace_all(team, "Texas A&M Corpus Chris", "TAM C. Christi"),
+      team = str_replace_all(team, "Louisiana Monroe", "ULM"),
+      team = str_replace_all(team, "UT Rio Grande Valley", "UTRGV"),
+      team = str_replace_all(team, "Arkansas Pine Bluff", "Ark Pine Bluff"),
+      team = str_replace_all(team, "SIU Edwardsville", "SIUE"),
+      team = str_replace_all(team, "Tennessee Martin", "TN Martin"),
+      team = str_replace_all(team, "St. Thomas", "St Thomas MN"),
+      team = str_replace_all(team, "Queens", "Queens NC"),
+      team = str_replace_all(team, "Bethune Cookman", "Bethune-Cookman"),
+      team = str_replace_all(team, "Maryland Eastern Shore", "MD E Shore"),
+      team = str_replace_all(team, "Texas A&M Commerce", "TX A&M Commerce"),
+      team = str_replace_all(team, "N.C.", "NC"),
+      team = str_replace_all(team, "St. Thomas", "St Thomas MN"),
+      team = str_replace_all(team, "UMass Lowell", "MA Lowell"),
+      team = str_replace_all(team, "Texas A&M Corpus Chris", "TAM C. Christi"),
+      team = str_replace_all(team, "Illinois Chicago", "IL Chicago"),
+      team = str_replace_all(team, "UMKC", "Missouri KC"),
+      team = str_replace_all(team, "Tennessee Martin", "TN Martin"),
+      team = str_replace_all(team, "Cal St. ", "CS "),
+      team = str_replace_all(team, "UTSA", "UT San Antonio"),
+      team = str_replace_all(team, "Queens", "Queens NC"),
+      team = str_replace_all(team, "FIU", "Florida Intl"),
+      team = str_replace_all(team, "SIU Edwardsville", "SIUE"),
+      team = str_replace_all(team, "USC Upstate", "SC Upstate"),
+      team = str_replace_all(team, "Louisiana Monroe", "ULM"),
+      team = str_replace_all(team, "Bethune Cookman", "Bethune-Cookman"),
+      team = str_replace_all(team, "UT Rio Grande Valley", "UTRGV"),
+      team = str_replace_all(team, "Arkansas Pine Bluff", "Ark Pine Bluff"),
+      team = str_replace_all(team, "Texas A&M Commerce", "TX A&M Commerce"),
+      team = str_replace_all(team, "LIU", "LIU Brooklyn"),
+      team = str_replace_all(team, "LIU Brooklyn Brooklyn", "LIU Brooklyn"),
+      team = str_replace_all(team, "Maryland Eastern Shore", "MD E Shore"),
+      team = str_replace_all(team, "Mississippi Valley St.", "MS Valley St"),
+      team = str_replace_all(team, "Houston Christian", "Houston Chr"),
+      team = str_replace_all(team, "Southeast Missouri St.", "SE Missouri St"),
+      team = str_replace_all(team, "Saint Francis", "St Francis PA"),
+      team = str_replace_all(team, "St. Francis", "St Francis"),
+      team = str_replace_all(team, "Dixie St.", "Utah Tech"),
+      team = str_replace_all(team, "Louisiana Lafayette", "Louisiana"),
+      team = str_replace_all(team, "College of Charleston", "Col Charleston"),
+      team = str_replace_all(team, "IPFW", "PFW"),
+      team = str_replace_all(team, "Arkansas Little Rock", "Ark Little Rock"),
+      team = str_replace_all(team, "Texas Pan American", "UTRGV"),
+      team = str_replace_all(team, "Winston Salem St.", "W Salem St"),
+      team = str_replace_all(team, "Southwest Missouri St.", "Missouri St"),
+      team = str_replace_all(team, "Southwest Texas St.", "Texas St"))
+}
+
 # Tidying -----------------------------------------------------------------
 
 teams <- read_csv("Project/Kaggle Data2/MTeams.csv", show_col_types = FALSE) %>% clean_names() %>%
@@ -102,40 +195,7 @@ alternate_spellings <- read_csv("Project/Kaggle Data2/MTeamSpellings.csv", show_
   distinct(team_name, .keep_all = TRUE)
 
 sor2 <- read_excel("Project/MarchMadness_Bracket/Data/SOR data.xlsx") %>%
-  clean_names() %>%
-  mutate(
-    team = str_remove_all(team, "[0123456789\\*]"),
-    team = str_trim(team),
-    team = str_replace_all(team, "Cal St. Bakersfield", "CS Bakersfield"),
-    team = str_replace_all(team, "UTSA", "UT San Antonio"),
-    team = str_replace_all(team, "Louisiana Lafayette", "Lafayette"),
-    team = str_replace_all(team, "UMass Lowell", "MA Lowell"),
-    team = str_replace_all(team, "College of Charleston", "Col Charleston"),
-    team = str_replace_all(team, "St. Francis NY", "St Francis NY"),
-    team = str_replace_all(team, "St. Francis PA", "St Francis PA"),
-    team = str_replace_all(team, "UMKC", "Missouri KC"),
-    team = str_replace_all(team, "Tarleton St.", "Tarleton St"),
-    team = str_replace_all(team, "Southeast Missouri St.", "SE Missouri St"),
-    team = str_replace_all(team, "FIU", "Florida Intl"),
-    team = str_replace_all(team, "Illinois Chicago", "IL Chicago"),
-    team = str_replace_all(team, "USC Upstate", "SC Upstate"),
-    team = str_replace_all(team, "Dixie St.", "Utah Tech"),
-    team = str_replace_all(team, "SIU-Edwardsville", "SIUE"),
-    team = str_replace_all(team, "McNeese St.", "McNeese St"),
-    team = str_replace_all(team, "Mississippi Valley St.", "MS Valley St"),
-    team = str_replace_all(team, "Texas A&M Corpus Chris", "TAM C. Christi"),
-    team = str_replace_all(team, "Louisiana Monroe", "ULM"),
-    team = str_replace_all(team, "UT Rio Grande Valley", "UTRGV"),
-    team = str_replace_all(team, "Arkansas Pine Bluff", "Ark Pine Bluff"),
-    team = str_replace_all(team, "SIU Edwardsville", "SIUE"),
-    team = str_replace_all(team, "Tennessee Martin", "TN Martin"),
-    team = str_replace_all(team, "St. Thomas", "St Thomas MN"),
-    team = str_replace_all(team, "Queens", "Queens NC"),
-    team = str_replace_all(team, "Bethune Cookman", "Bethune-Cookman"),
-    team = str_replace_all(team, "Maryland Eastern Shore", "MD E Shore"),
-    team = str_replace_all(team, "Texas A&M Commerce", "TX A&M Commerce"),
-    team = str_replace_all(team, "Houston Christian", "Houston Chr"),
-    ) %>%
+  clean_team_names() %>%
   left_join(alternate_spellings, by = join_by("team" == "team_name")) %>%
   select(-team)
 
@@ -144,29 +204,7 @@ sor <- sor %>% filter(season != 2021, season != 2023) %>%
   arrange(season, sor)
 
 kpi2 <- read_excel("Project/MarchMadness_Bracket/Data/KPI data.xlsx") %>%
-  clean_names() %>%
-  mutate(
-    team = str_remove_all(team, "\\("),
-    team = str_remove_all(team, "\\)"),
-    team = str_replace_all(team, "St. ", "St "),
-    team = str_replace_all(team, "C-", "C "),
-    team = str_replace_all(team, "LaSalle", "La Salle"),
-    team = str_replace_all(team, "Cal State-", "CS "),
-    team = str_replace_all(team, "UMKC", "Missouri KC"),
-    team = str_replace_all(team, "Purdue-Fort Wayne", "PFW"),
-    team = str_replace_all(team, "UMass Lowell", "MA Lowell"),
-    team = str_replace_all(team, "McNeese State", "McNeese St"),
-    team = str_replace_all(team, "TAMU-Corpus Christi", "TAM C. Christi"),
-    team = str_replace_all(team, "USC Upstate", "SC Upstate"),
-    team = str_replace_all(team, "Mount St Mary's", "Mt St Mary's"),
-    team = str_replace_all(team, "SIU-Edwardsville", "SIUE"),
-    team = str_replace_all(team, "Houston Christian", "Houston Chr"),
-    team = str_replace_all(team, "SE Missouri State", "SE Missouri St"),
-    team = str_replace_all(team, "MD-Eastern Shore", "MD E Shore"),
-    team = str_replace_all(team, "Southern Ind.", "Southern Indiana"),
-    team = str_replace_all(team, "Tex. A&M-Commerce", "TX A&M Commerce"),
-    team = str_replace_all(team, "Lindenwood MO", "Lindenwood")
-    ) %>%
+  clean_team_names() %>%
   filter(team != "Non D-I") %>%
   left_join(alternate_spellings, by = join_by("team" == "team_name")) %>%
   select(-team)
@@ -174,60 +212,22 @@ kpi2 <- read_excel("Project/MarchMadness_Bracket/Data/KPI data.xlsx") %>%
 kpi <- kpi %>% filter(season < 2020) %>%
   bind_rows(kpi2)
 
-# library("rvest")
-# library("httr")
-# 
-# read_html("https://faktorsports.com") %>%
-#   html_element("body") %>%
-#   html_element("#root") %>%
-#   html_children()
-  
+sos2 <- read_html("https://www.warrennolan.com/basketball/2025/sos-net") %>%
+  html_element("body") %>%
+  html_element("#container-x") %>%
+  html_element("#main-body-content") %>%
+  html_element(".main-body-row-flex-scroll") %>%
+  html_element(".full-width-box-x") %>%
+  html_table() %>%
+  rename("SOS" = "SOS Rank", "NonConf SOS" = "Non-Conf SOS Rank") %>%
+  mutate(Year = 2025)
+
 sos <- read_excel("Project/MarchMadness_Bracket/Data/SOS data.xlsx") %>%
-  clean_names() %>%
-  mutate(
-    team = str_remove_all(team, "[0123456789\\*]"),
-    team = str_trim(team),
-    team = str_replace_all(team, "N.C.", "NC"),
-    team = str_replace_all(team, "McNeese St.", "McNeese St"),
-    team = str_replace_all(team, "Tarleton St.", "Tarleton St"),
-    team = str_replace_all(team, "St. Thomas", "St Thomas MN"),
-    team = str_replace_all(team, "UMass Lowell", "MA Lowell"),
-    team = str_replace_all(team, "Texas A&M Corpus Chris", "TAM C. Christi"),
-    team = str_replace_all(team, "Illinois Chicago", "IL Chicago"),
-    team = str_replace_all(team, "UMKC", "Missouri KC"),
-    team = str_replace_all(team, "Tennessee Martin", "TN Martin"),
-    team = str_replace_all(team, "Cal St. ", "CS "),
-    team = str_replace_all(team, "UTSA", "UT San Antonio"),
-    team = str_replace_all(team, "Queens", "Queens NC"),
-    team = str_replace_all(team, "FIU", "Florida Intl"),
-    team = str_replace_all(team, "SIU Edwardsville", "SIUE"),
-    team = str_replace_all(team, "USC Upstate", "SC Upstate"),
-    team = str_replace_all(team, "Louisiana Monroe", "ULM"),
-    team = str_replace_all(team, "Bethune Cookman", "Bethune-Cookman"),
-    team = str_replace_all(team, "UT Rio Grande Valley", "UTRGV"),
-    team = str_replace_all(team, "Arkansas Pine Bluff", "Ark Pine Bluff"),
-    team = str_replace_all(team, "Texas A&M Commerce", "TX A&M Commerce"),
-    team = str_replace_all(team, "LIU", "LIU Brooklyn"),
-    team = str_replace_all(team, "LIU Brooklyn Brooklyn", "LIU Brooklyn"),
-    team = str_replace_all(team, "Maryland Eastern Shore", "MD E Shore"),
-    team = str_replace_all(team, "Mississippi Valley St.", "MS Valley St"),
-    team = str_replace_all(team, "Houston Christian", "Houston Chr"),
-    team = str_replace_all(team, "Southeast Missouri St.", "SE Missouri St"),
-    team = str_replace_all(team, "Saint Francis", "St Francis PA"),
-    team = str_replace_all(team, "St. Francis", "St Francis"),
-    team = str_replace_all(team, "Dixie St.", "Utah Tech"),
-    team = str_replace_all(team, "Louisiana Lafayette", "Louisiana"),
-    team = str_replace_all(team, "College of Charleston", "Col Charleston"),
-    team = str_replace_all(team, "IPFW", "PFW"),
-    team = str_replace_all(team, "Arkansas Little Rock", "Ark Little Rock"),
-    team = str_replace_all(team, "Texas Pan American", "UTRGV"),
-    team = str_replace_all(team, "Winston Salem St.", "W Salem St"),
-    team = str_replace_all(team, "Southwest Missouri St.", "Missouri St"),
-    team = str_replace_all(team, "Southwest Texas St.", "Texas St"),
-    ) %>%
+  bind_rows(sos2) %>%
+  clean_team_names() %>%
   left_join(alternate_spellings, by = join_by("team" == "team_name")) %>%
   select(-team) %>%
-  rename("season" = "year")
+  rename("season" = "year") %>% distinct(season, team_id)
 
 net_quads_big <- historical_season %>%
   left_join(net, by = join_by(season, "w_team_id" == "team_id")) %>%
@@ -343,7 +343,7 @@ rpi_quads <- rpi_quads_big %>%
 conf_tournament <- read_csv("Project/Kaggle Data2/MConferenceTourneyGames.csv", show_col_types = FALSE) %>%
   clean_names() %>% mutate(index = row_number()) %>% rename(conf = conf_abbrev)
 
-conf_champions <- conf_tournament %>%
+conf_champions0 <- conf_tournament %>%
   group_by(season, conf) %>%
   summarise(
     last_game_row = max(index),
@@ -355,6 +355,18 @@ conf_champions <- conf_tournament %>%
          finalist = l_team_id) %>%
   pivot_longer(cols = c("champion", "finalist"), names_to = "conf_result", values_to = "team_id") %>%
   select(-conf)
+
+conf_champions <- tibble(
+  season = 2025,
+  conf_result = "champion",
+  team = c("Southern", "American", "Marist", "SE Missouri State", "High Point",
+           "James Madison", "Montana", "Omaha", "Drake", "Liberty", "Chattanooga",
+           "Central Connecticut", "Robert Morris", "Utah Valley", "Akron", "McNeese St.",
+           "Bryant", "Norfolk State", "Towson", "UC San Diego", "Lipscomb", "VCU", "Yale")) %>%
+  clean_team_names() %>%
+  left_join(alternate_spellings, by = join_by("team" == "team_name")) %>%
+  select(season, conf_result, team_id) %>%
+  bind_rows(conf_champions0)
 
 seeds <- read_csv("Project/Kaggle Data2/MNCAATourneySeeds.csv", show_col_types = FALSE) %>% clean_names() %>%
   mutate(seed = str_remove_all(seed, "[WXYZab]"),
@@ -503,7 +515,7 @@ full_team2 <- full_team %>% mutate(
       team_name == "Gonzaga" ~ "power six",
       .default = "mid major"))
 
-# write.csv(full_team2, "Project/full_team.csv")
+# write.csv(full_team2, "Project/MarchMadness_Bracket/Data/full_team.csv")
 
 set.seed(1128)
 
@@ -521,4 +533,4 @@ full_tourney <- historical_tourney %>%
   left_join(full_team2 %>% rename_with( ~ paste0("t1_", .x)), by = join_by(season == t1_season, t1_team_id)) %>%
   left_join(full_team2 %>% rename_with( ~ paste0("t2_", .x)), by = join_by(season == t2_season, t2_team_id))
 
-# write.csv(full_tourney, "Project/full_tourney.csv")
+# write.csv(full_tourney, "Project/MarchMadness_Bracket/Data/full_tourney.csv")
