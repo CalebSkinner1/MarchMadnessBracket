@@ -515,7 +515,7 @@ full_team2 <- full_team %>% mutate(
       team_name == "Gonzaga" ~ "power six",
       .default = "mid major"))
 
-# write.csv(full_team2, "Project/MarchMadness_Bracket/Data/full_team.csv")
+write.csv(full_team2, "Project/MarchMadness_Bracket/Data/full_team.csv")
 
 set.seed(1128)
 
@@ -533,4 +533,4 @@ full_tourney <- historical_tourney %>%
   left_join(full_team2 %>% rename_with( ~ paste0("t1_", .x)), by = join_by(season == t1_season, t1_team_id)) %>%
   left_join(full_team2 %>% rename_with( ~ paste0("t2_", .x)), by = join_by(season == t2_season, t2_team_id))
 
-# write.csv(full_tourney, "Project/MarchMadness_Bracket/Data/full_tourney.csv")
+write.csv(full_tourney, "Project/MarchMadness_Bracket/Data/full_tourney.csv")

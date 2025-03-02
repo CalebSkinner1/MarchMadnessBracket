@@ -1,21 +1,22 @@
 # Future Predictions
-# Date: February 27, 2025
+# Date: March 2, 2025
 # This script takes the model from the report and applies it to data in future seasons
 
 library("tidymodels")
 library("janitor")
-library("rvest")
 library("xgboost")
 library("rpart.plot")
 library("vip")
 library("here")
 library("tidyverse"); theme_set(theme_minimal())
 
-# Data Update Process Each Year
+# Data Update Process Each Year - in Project Tidy.R
 # 1. Download new Kaggle Data (https://www.kaggle.com/competitions/march-machine-learning-mania-2025/data)
 # 2. Download KPI (https://faktorsports.com/#/home)
 # 3. SOS should scrape by itself
 # 4. check conference champions (https://www.espn.com/espn/feature/story/_/page/bracketology/ncaa-bracketology-2025-march-madness-men-field-predictions)
+# 5. rerun Project Tidy.R
+# source(here("Project/MarchMadness_Bracket/Project Tidy.R"))
 # check for bugs
 
 # load data
@@ -162,7 +163,8 @@ s1_boost_predictions %>%
       rank < 9 ~ "Last Four In",
       rank < 13 ~ "First Four Out",
       rank < 17 ~ "Next Four Out",
-      rank < 21 ~ "Contention"))
+      rank < 21 ~ "Contention")) %>%
+  select(-rank)
 
 # predicted seeds
 predicted_seeds %>% select(team_name, pred_seed) %>%
