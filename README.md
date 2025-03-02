@@ -25,6 +25,14 @@ For each of the seven years, I use data from the other six years to train the mo
 Each year, only 68 teams make the tournament, so I take the 68 teams most predicted by the classifcation trees. Next, I train a regression boosted tree on the teams that made the tournament
 from the other six years. I apply this model to the 68 teams that the classification model selected. After grouping the predicted seeds into bins of four, I have the model's expected seed.
 
+## Second Stage Boosting.R
+
+This file uses boosting trees to predict the winners of each of the tournament games.
+
+## Live Predictions.R
+I added this file in 2025 to actively predict the tournament teams as the season progresses. It works by updating Project Tidy.R and running
+the files in First Stage Boosting.R. In the future, I would like to bootstrap the estimates to find an appropriate confidence interval.
+
 ## Final Report
 
 This report is the three-page report I submitted in my Data Science II class. The code is located in the qmd file.
