@@ -202,7 +202,7 @@ future:::ClusterRegistry("stop")
 toc()
 
 # find summary stats of bootstrap
-uq %>% as.matrix() %>% t() %>%
+boot_summary <- uq %>% as.matrix() %>% t() %>%
   as.data.frame() %>%
 lapply(function(x) as.numeric(as.character(x))) %>%
   bind_cols() %>%
@@ -239,4 +239,15 @@ predict_inclusion(team_train, team_test, bubble = TRUE) %>%
       index < 21 ~ "Contention")) %>%
   select(-index)
 
+# UQ
+# bubble
+lunardi <- c("Utah St", "Georgia", "Ohio St", "Arkansas", #Last Four Byes
+  "San Diego St", "Indiana", "Boise St", "Xavier", # Last Four In
+  "Oklahoma", "North Carolina", "Texas", "Nebraska", # First Four Out
+  "Colorado St", "Cincinnati", "Wake Forest", "SMU")  # Next Four Out
+
+boot_summary %>%
+  filter(team_name %in% lunardi) %>%
+  mutate(team_name = factor(team_name, levels = lunardi)) %>%
+  arrange(team_name)
 
