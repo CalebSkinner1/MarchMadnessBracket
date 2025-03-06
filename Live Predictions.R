@@ -172,7 +172,7 @@ predict_seed <- function(train_included, test_included){
     select(team_name, pred_seed)
 }
 
-# Bootstrapping for UQ
+# Bootstrapping for UQ ~danger... this takes 31+ minutes
 tic()
 plan(multisession, workers = 4) # use multiple R sessions
 train_splits <- bootstraps(team_train, times = 500)$splits #bootstrap training data for UQ
@@ -185,7 +185,7 @@ uq <- future_map_dfr(train_splits, ~{
   # predict seeding of included teams
   pred_seeds <- predict_seed(train_included = analysis(.x) %>% filter(make_tournament == 1), #bootstrapped training data
                         test_included = pred_inclusion %>% left_join(team_test, by = join_by(team_name))) #included data w info
-  gc() # restore memory
+  gc() # recover lost memory
   
   team_test %>% select(team_name) %>%
     left_join(pred_seeds, by = join_by(team_name)) %>%
@@ -200,6 +200,21 @@ uq <- future_map_dfr(train_splits, ~{
 
 future:::ClusterRegistry("stop")
 toc()
+
+# find summary stats of bootstrap
+uq %>% as.matrix() %>% t() %>%
+  as.data.frame() %>%
+lapply(function(x) as.numeric(as.character(x))) %>%
+  bind_cols() %>%
+  mutate(team_name = colnames(uq)) %>%
+  relocate(team_name) %>%
+  mutate(
+    seeds = rowMeans(across(contains("V")), na.rm = TRUE),
+    across(contains("V"), ~if_else(is.na(.), 0, 1)),
+    inclusion_prob = rowMeans(across(contains("V")))) %>%
+  select(team_name, seeds, inclusion_prob) %>%
+  arrange(desc(inclusion_prob), seeds) %>%
+  view()
 
 # Exact Results -----------------------------------------------------------------
 
