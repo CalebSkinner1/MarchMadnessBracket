@@ -359,8 +359,8 @@ conf_champions0 <- conf_tournament %>%
 conf_champions <- tibble(
   season = 2025,
   conf_result = "champion",
-  team = c("Southern", "American", "Marist", "SE Missouri State", "High Point",
-           "James Madison", "Montana", "Omaha", "Drake", "Liberty", "Chattanooga",
+  team = c("Southern", "Bucknell", "Northern Colorado", "SE Missouri State", "High Point",
+           "Quinnipiac", "Jacksonville St", "Omaha", "Drake", "South Alabama", "Chattanooga",
            "Central Connecticut", "Robert Morris", "Utah Valley", "Akron", "McNeese St.",
            "Bryant", "Norfolk State", "Towson", "UC San Diego", "Lipscomb", "VCU", "Yale")) %>%
   clean_team_names() %>%

@@ -31,7 +31,8 @@ This file uses boosting trees to predict the winners of each of the tournament g
 
 ## Live Predictions.R
 I added this file in 2025 to actively predict the tournament teams as the season progresses. It works by updating Project Tidy.R and running
-the files in First Stage Boosting.R. In the future, I would like to bootstrap the estimates to find an appropriate confidence interval.
+the files in First Stage Boosting.R. I bootstrap the training data 500 times to produce more realistic probabilities of inclusion
+and final seed estimates.
 
 ## Final Report
 

@@ -213,8 +213,7 @@ lapply(function(x) as.numeric(as.character(x))) %>%
     across(contains("V"), ~if_else(is.na(.), 0, 1)),
     inclusion_prob = rowMeans(across(contains("V")))) %>%
   select(team_name, seeds, inclusion_prob) %>%
-  arrange(desc(inclusion_prob), seeds) %>%
-  view()
+  arrange(desc(inclusion_prob), seeds)
 
 # Exact Results -----------------------------------------------------------------
 
