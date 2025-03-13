@@ -359,10 +359,10 @@ conf_champions0 <- conf_tournament %>%
 conf_champions <- tibble(
   season = 2025,
   conf_result = "champion",
-  team = c("Southern", "SIU Edwardsville", "American", "Liberty", "Furman", "High Point",
-           "Quinnipiac", "Omaha", "South Alabama", "Northern Colorado",
-           "Central Connecticut", "Robert Morris", "Utah Valley", "Akron", "McNeese St.",
-           "Bryant", "Norfolk State", "Towson", "UC San Diego", "Lipscomb", "Yale")) %>%
+  team = c("SIU Edwardsville", "Jackson St", "American", "Montana", "Wofford", "High Point",
+           "UNC Wilmington", "Omaha", "Quinnipiac", "Troy",
+           "Liberty", "Robert Morris", "Utah Valley", "St. Francis", "McNeese St.",
+           "Bryant", "Norfolk State", "UC San Diego", "Lipscomb", "Yale")) %>%
   clean_team_names() %>%
   left_join(alternate_spellings, by = join_by("team" == "team_name")) %>%
   select(season, conf_result, team_id) %>%
