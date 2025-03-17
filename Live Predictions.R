@@ -222,7 +222,7 @@ included_teams <- predict_inclusion(team_train, team_test, bubble = FALSE) %>%
   left_join(team_test, by = join_by(team_name))
 
 # predict seed ~3.6 seconds
-team_train %>% filter(make_tournament == 1) %>% predict_seed(included_teams) %>% print(n=16)
+team_train %>% filter(make_tournament == 1) %>% predict_seed(included_teams) %>% print(n=68)
 
 # bubble
 predict_inclusion(team_train, team_test, bubble = TRUE) %>%
@@ -241,12 +241,6 @@ predict_inclusion(team_train, team_test, bubble = TRUE) %>%
 
 # UQ
 boot_summary %>% print(n=12)
-
-# bubble
-lunardi <- c("Utah St", "Georgia", "Ohio St", "Arkansas", #Last Four Byes
-  "San Diego St", "Indiana", "Boise St", "Xavier", # Last Four In
-  "Oklahoma", "North Carolina", "Texas", "Nebraska", # First Four Out
-  "Colorado St", "Cincinnati", "Wake Forest", "SMU")  # Next Four Out
 
 boot_summary %>%
   filter(team_name %in% lunardi) %>%

@@ -361,14 +361,15 @@ conf_champions <- tibble(
   conf_result = "champion",
   team = c("Duke", "Bryant", "Lipscomb", "Houston", "St John's", "Montana",
            "High Point", "UC San Diego", "UNC Wilmington", "Liberty", "Robert Morris",
-           "Yale",
+           "Yale", "VCU", "Florida", "Memphis", "Michigan", "VCU",
            "Mount St Mary's", "Akron", "Norfolk St", "Drake", "Colorado St",
            "St Francis", "SIU Edwardsville", "American", "Wofford", "McNeese St",
            "Omaha", "Troy", "Alabama St", "Grand Canyon", "Gonzaga")) %>%
   clean_team_names() %>%
   left_join(alternate_spellings, by = join_by("team" == "team_name")) %>%
   select(season, conf_result, team_id) %>%
-  bind_rows(conf_champions0)
+  bind_rows(conf_champions0) %>%
+  distinct()
 
 seeds <- read_csv("Project/Kaggle Data2/MNCAATourneySeeds.csv", show_col_types = FALSE) %>% clean_names() %>%
   mutate(seed = str_remove_all(seed, "[WXYZab]"),
