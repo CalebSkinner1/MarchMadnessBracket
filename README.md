@@ -34,6 +34,9 @@ I added this file in 2025 to actively predict the tournament teams as the season
 the files in First Stage Boosting.R. I bootstrap the training data 500 times to produce more realistic probabilities of inclusion
 and final seed estimates.
 
+Unfortunately, Kaggle does not regularly update their data. In future years, the goal is to convert this page to a rudimentary website and
+regularly scrape the values from a website that does update the rankings and records.
+
 ## Final Report
 
 This report is the three-page report I submitted in my Data Science II class. The code is located in the qmd file.
