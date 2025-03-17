@@ -242,8 +242,21 @@ predict_inclusion(team_train, team_test, bubble = TRUE) %>%
 # UQ
 boot_summary %>% print(n=12)
 
+bubble <- c("Texas", "Xavier", "San Diego St", "North Carolina", "West Virginia", "Indiana", "Ohio St", "Boise St")
+
+# UQ bubble
 boot_summary %>%
-  filter(team_name %in% lunardi) %>%
-  mutate(team_name = factor(team_name, levels = lunardi)) %>%
+  filter(team_name %in% bubble) %>%
+  mutate(team_name = factor(team_name, levels = bubble)) %>%
   arrange(team_name)
+
+boot_summary %>%
+  filter(inclusion_prob > 0, inclusion_prob < 1)
+
+boot_summary %>%
+  mutate(index = row_number()) %>%
+  relocate(index) %>%
+  dplyr::slice(64:77)
+
+# write_csv(boot_summary, here("Project/MarchMadness_Bracket/boot_predictions25.csv"))
 

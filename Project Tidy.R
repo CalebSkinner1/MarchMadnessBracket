@@ -116,11 +116,11 @@ clean_team_names <- function(df){
 
 # Tidying -----------------------------------------------------------------
 
-teams <- read_csv("Project/Kaggle Data2/MTeams.csv", show_col_types = FALSE) %>% clean_names() %>%
+teams <- read_csv("Project/Kaggle Data/MTeams.csv", show_col_types = FALSE) %>% clean_names() %>%
   select(team_id, team_name)
-conferences <- read_csv("Project/Kaggle Data2/MTeamConferences.csv", show_col_types = FALSE) %>% clean_names()
+conferences <- read_csv("Project/Kaggle Data/MTeamConferences.csv", show_col_types = FALSE) %>% clean_names()
 
-historical_season <- read_csv("Project/Kaggle Data2/MRegularSeasonCompactResults.csv", show_col_types = FALSE) %>% clean_names() %>%
+historical_season <- read_csv("Project/Kaggle Data/MRegularSeasonCompactResults.csv", show_col_types = FALSE) %>% clean_names() %>%
   left_join(conferences, by = join_by(season, "w_team_id" == "team_id")) %>%
   rename(w_conf = "conf_abbrev") %>%
   left_join(conferences, by = join_by(season, "l_team_id" == "team_id")) %>%
@@ -148,7 +148,7 @@ non_conf_record <- historical_season %>% filter(w_conf != l_conf) %>% group_by(w
     nc_win_perc = nc_wins/(nc_wins + nc_losses)) %>%
   arrange(team_id, season)
 
-rankings <- read_csv("Project/Kaggle Data2/MMasseyOrdinals.csv", show_col_types = FALSE) %>%
+rankings <- read_csv("Project/Kaggle Data/MMasseyOrdinals.csv", show_col_types = FALSE) %>%
   clean_names()
 
 ranking_filter <- function(sys){
@@ -187,7 +187,7 @@ ap <- ranking_filter("AP") %>%
 sag <- ranking_filter("SAG") %>%
   rename(sag = ordinal_rank)
 
-alternate_spellings <- read_csv("Project/Kaggle Data2/MTeamSpellings.csv", show_col_types = FALSE) %>%
+alternate_spellings <- read_csv("Project/Kaggle Data/MTeamSpellings.csv", show_col_types = FALSE) %>%
   clean_names() %>%
   mutate(team_name = str_to_title(team_name_spelling)) %>%
   select(team_name, team_id) %>%
@@ -340,10 +340,10 @@ rpi_quads <- rpi_quads_big %>%
   rename_with(~str_replace(.x, "wins_", "rpi_w")) %>% 
   rename_with(~str_replace(.x, "losses_", "rpi_l"))
 
-conf_tournament <- read_csv("Project/Kaggle Data2/MConferenceTourneyGames.csv", show_col_types = FALSE) %>%
+conf_tournament <- read_csv("Project/Kaggle Data/MConferenceTourneyGames.csv", show_col_types = FALSE) %>%
   clean_names() %>% mutate(index = row_number()) %>% rename(conf = conf_abbrev)
 
-conf_champions0 <- conf_tournament %>%
+conf_champions <- conf_tournament %>%
   group_by(season, conf) %>%
   summarise(
     last_game_row = max(index),
@@ -356,26 +356,26 @@ conf_champions0 <- conf_tournament %>%
   pivot_longer(cols = c("champion", "finalist"), names_to = "conf_result", values_to = "team_id") %>%
   select(-conf)
 
-conf_champions <- tibble(
-  season = 2025,
-  conf_result = "champion",
-  team = c("Duke", "Bryant", "Lipscomb", "Houston", "St John's", "Montana",
-           "High Point", "UC San Diego", "UNC Wilmington", "Liberty", "Robert Morris",
-           "Yale", "VCU", "Florida", "Memphis", "Michigan", "VCU",
-           "Mount St Mary's", "Akron", "Norfolk St", "Drake", "Colorado St",
-           "St Francis", "SIU Edwardsville", "American", "Wofford", "McNeese St",
-           "Omaha", "Troy", "Alabama St", "Grand Canyon", "Gonzaga")) %>%
-  clean_team_names() %>%
-  left_join(alternate_spellings, by = join_by("team" == "team_name")) %>%
-  select(season, conf_result, team_id) %>%
-  bind_rows(conf_champions0) %>%
-  distinct()
+# conf_champions <- tibble(
+#   season = 2025,
+#   conf_result = "champion",
+#   team = c("Duke", "Bryant", "Lipscomb", "Houston", "St John's", "Montana",
+#            "High Point", "UC San Diego", "UNC Wilmington", "Liberty", "Robert Morris",
+#            "Yale", "VCU", "Florida", "Memphis", "Michigan", "VCU",
+#            "Mount St Mary's", "Akron", "Norfolk St", "Drake", "Colorado St",
+#            "St Francis", "SIU Edwardsville", "American", "Wofford", "McNeese St",
+#            "Omaha", "Troy", "Alabama St", "Grand Canyon", "Gonzaga")) %>%
+#   clean_team_names() %>%
+#   left_join(alternate_spellings, by = join_by("team" == "team_name")) %>%
+#   select(season, conf_result, team_id) %>%
+#   bind_rows(conf_champions0) %>%
+#   distinct()
 
-seeds <- read_csv("Project/Kaggle Data2/MNCAATourneySeeds.csv", show_col_types = FALSE) %>% clean_names() %>%
+seeds <- read_csv("Project/Kaggle Data/MNCAATourneySeeds.csv", show_col_types = FALSE) %>% clean_names() %>%
   mutate(seed = str_remove_all(seed, "[WXYZab]"),
          seed = as.integer(seed))
 
-historical_tourney <- read_csv("Project/Kaggle Data2/MNCAATourneyCompactResults.csv", show_col_types = FALSE) %>%
+historical_tourney <- read_csv("Project/Kaggle Data/MNCAATourneyCompactResults.csv", show_col_types = FALSE) %>%
   clean_names() %>%
   add_row(season = 2021, day_num = 137, w_team_id = 1332, w_score = 1, l_team_id = 1433, l_score = 0, w_loc = "N", num_ot = 0)
 
