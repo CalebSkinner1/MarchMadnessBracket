@@ -261,12 +261,31 @@ boot_summary %>%
 # write_csv(boot_summary, here("Project/MarchMadness_Bracket/boot_predictions25.csv"))
 boot_summary <- read_csv(here("Project/MarchMadness_Bracket/boot_predictions25.csv"))
 
+# conference disparity
 boot_summary %>% 
-  left_join(team_data %>% filter(season == 2025), by = join_by(team_name)) %>%
-  select(team_name, seeds, inclusion_prob, seed) %>%
-  mutate(
-    seed_diff = abs(seed - seeds)) %>%
-  filter(!is.na(seed)) %>%
-  arrange(desc(seed_diff)) %>%
+  left_join(read_csv(here("Project/MarchMadness_Bracket/Data/full_team.csv"), show_col_types = FALSE) %>% filter(season == 2025), by = join_by(team_name)) %>%
+  select(team_name, seeds, inclusion_prob, seed, conf_abbrev) %>%
   rename(predicted_seed = seeds) %>%
-  print(n= 7)
+  mutate(
+    seed_diff = case_when(!is.na(seed) & !is.na(predicted_seed) ~ predicted_seed - seed,
+                          !is.na(seed) & is.na(predicted_seed) ~ 12 - seed,
+                          is.na(seed) & !is.na(predicted_seed) ~ predicted_seed - 12,
+                          .default = NA)) %>% # positive is overseeded, negative is underseeded
+  group_by(conf_abbrev) %>%
+  summarize(
+    average_disparity = mean(seed_diff, na.rm = TRUE),
+    teams = sum(!is.na(seed_diff))) %>%
+  arrange(desc(average_disparity))
+
+# individual disparity
+boot_summary %>% 
+  left_join(read_csv(here("Project/MarchMadness_Bracket/Data/full_team.csv"), show_col_types = FALSE) %>% filter(season == 2025), by = join_by(team_name)) %>%
+  select(team_name, seeds, inclusion_prob, seed, conf_abbrev) %>%
+  rename(predicted_seed = seeds) %>%
+  mutate(
+    seed_diff = case_when(!is.na(seed) & !is.na(predicted_seed) ~ predicted_seed - seed,
+                          !is.na(seed) & is.na(predicted_seed) ~ 12 - seed,
+                          is.na(seed) & !is.na(predicted_seed) ~ predicted_seed - 12,
+                          .default = NA)) %>% # positive is overseeded, negative is underseeded
+  arrange(desc(abs(seed_diff)))
+
