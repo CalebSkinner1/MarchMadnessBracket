@@ -259,4 +259,14 @@ boot_summary %>%
   dplyr::slice(64:77)
 
 # write_csv(boot_summary, here("Project/MarchMadness_Bracket/boot_predictions25.csv"))
+boot_summary <- read_csv(here("Project/MarchMadness_Bracket/boot_predictions25.csv"))
 
+boot_summary %>% 
+  left_join(team_data %>% filter(season == 2025), by = join_by(team_name)) %>%
+  select(team_name, seeds, inclusion_prob, seed) %>%
+  mutate(
+    seed_diff = abs(seed - seeds)) %>%
+  filter(!is.na(seed)) %>%
+  arrange(desc(seed_diff)) %>%
+  rename(predicted_seed = seeds) %>%
+  print(n= 7)
